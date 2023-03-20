@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Bakshi</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="Compare CSV files from different sources to identify discrepancies.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Materialize CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" type="text/css" href="static/style.css">
+  <!-- Angular.js -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <!-- Bakshi Angular App -->
+  <script src=static/app.js></script>
+  <!-- Materialize JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  </head>
+  <body>
+    <div class="container">
+      <h1>Complete Report</h1>
+    <table>
+        <thead>
+          <tr>
+              <td><iframe srcdoc="{{ pie_chart }}" width="500" height="430"></iframe></td>
+              <td><iframe srcdoc="{{ present_pie_chart }}" width="500" height="430"></iframe></td>
+          </tr>
+          <tr>
+              <td><iframe srcdoc="{{ missing_pie_chart }}" width="500" height="430"></iframe></td>
+              <!-- Add the host status pie chart -->
+              <td><iframe srcdoc="{{ host_status_pie_chart }}" width="500" height="430"></iframe></td>
+          </tr>
+          <tr> <!-- Add this row for the bar chart -->
+              <td colspan="2"><iframe srcdoc="{{ bar_chart }}" width="1000" height="500"></iframe></td>
+          </tr>
+        </thead>
+      </table>
+      <div class="row">
+	  <form class="col s12">
+	    <div class="row">
+	      <div class="input-field col s4">
+	        <input id="serialNumber" type="text" class="validate" ng-model="filters.serialNumber">
+	        <label for="serialNumber">Serial Number</label>
+	      </div>
+	      <div class="input-field col s4">
+	        <input id="platform" type="text" class="validate" ng-model="filters.platform">
+	        <label for="platform">Platform</label>
+	      </div>
+	      <div class="input-field col s4">
+	        <input id="nameEmail" type="text" class="validate" ng-model="filters.nameEmail">
+	        <label for="nameEmail">Name/Email</label>
+	      </div>
+	      <div class="input-field col s4">
+	        <select id="presence" ng-model="filters.presence">
+	          <option value="" disabled selected>Presence</option>
+	          <option value="Missing">Missing</option>
+	          <option value="Present">Present</option>
+	        </select>
+	        <label for="presence">Presence</label>
+	      </div>
+	    </div>
+	    <button class="btn waves-effect waves-light" type="submit" name="action" ng-click="compareCSV()">Apply Filter</button>
+	  </form>
+	</div>
+      <table>
+        <thead>
+          <tr>
+            {% for header in headers %}
+              <th>{{ header }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+            <tr>
+              {% for cell in row %}
+                <td>{{ cell }}</td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </body>
+</html>

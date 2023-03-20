@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Bakshi</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="Compare CSV files from different sources to identify discrepancies.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Materialize CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" type="text/css" href="static/style.css">
+  <!-- Angular.js -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <!-- Bakshi Angular App -->
+  <script src=static/app.js></script>
+  <!-- Materialize JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"/>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- DataTables JS -->
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+ </head>
+  <body>
+      <h1>Time Stamp Report</h1>
+      {% include "chart.html" %}
+      <h3>Systems not found: {{ not_found_count }}</h3>
+      <div id="mdm_filter"></div>
+      <div id="cs_filter"></div>
+
+      <table id="comparison_table">
+          <thead>
+              <tr>
+                  {% for header in headers %}
+                      <th>{{ header }}</th>
+                  {% endfor %}
+              </tr>
+          </thead>
+          <tbody>
+              {% for row in rows %}
+                  <tr>
+                      {% for cell in row %}
+                          <td>{{ cell }}</td>
+                      {% endfor %}
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+ <script>
+  $(document).ready(function() {
+      var table = $('#comparison_table').DataTable({
+          order: [[2, 'desc']], // Sort by "Last Seen in MDM" by default
+          initComplete: function() {
+              // Add filtering options for "Last Seen Since Days in MDM"
+              this.api().columns(4).every(function() {
+                  var column = this;
+                  var select = $('<select><option value=""></option><option value="not_found">Not Found</option></select>')
+                      .appendTo($('#mdm_filter'))
+                      .on('change', function() {
+                          var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                          var filter = '';
+                          if (val === 'not_found') {
+                              filter = '^Not Found$';
+                          } else if (val === 'lt_4') {
+                              filter = '^([0-3])$';
+                          } else if (val === '4_10') {
+                              filter = '^(4|5|6|7|8|9|10)$';
+                          } else if (val === '10_15') {
+                              filter = '^1(0|1|2|3|4|5)$';
+                          } else if (val === 'gt_15') {
+                              filter = '^([1-9][6-9]|[2-9][0-9]|1[0-9]{2,})$';
+                          }
+                          column.search(filter, true, false).draw();
+                      });
+
+                  select.append('<option value="lt_4">Less than 4 days</option>');
+                  select.append('<option value="4_10">4 to 10 days</option>');
+                  select.append('<option value="10_15">10 to 15 days</option>');
+                  select.append('<option value="gt_15">More than 15 days</option>');
+              });
+
+              // Add filtering options for "Last Seen Since Days in Crowdstrike"
+              this.api().columns(5).every(function() {
+                  var column = this;
+                  var select = $('<select><option value=""></option><option value="not_found">Not Found</option></select>')
+                      .appendTo($('#cs_filter'))
+                      .on('change', function() {
+                          var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                          var filter = '';
+                          if (val === 'not_found') {
+                              filter = '^Not Found$';
+                          } else if (val === 'lt_4') {
+                              filter = '^([0-3])$';
+                          } else if (val === '4_7') {
+                              filter = '^(4|5|6|7)$';
+                          } else if (val === '7_15') {
+                              filter = '^([7-9]|1[0-5])$';
+                          } else if (val === 'gt_15') {
+                              filter = '^([1-9][6-9]|[2-9][0-9]|1[0-9]{2,})$';
+                          }
+                          column.search(filter, true, false).draw();
+                      });
+
+                  select.append('<option value="lt_4">Less than 4 days</option>');
+                  select.append('<option value="4_10">4 to 10 days</option>');
+                  select.append('<option value="10_15">10 to 15 days</option>');
+                  select.append('<option value="gt_15">More than 15 days</option>');
+
+              });
+          }
+      });
+  });
+  </script>
+  </body>
+</html>
+
+
+
+
+
+

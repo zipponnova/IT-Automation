@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Upload files</title>
+  </head>
+  <body>
+    <h1>Upload CSV files</h1>
+    <form method="post" action="/mac" enctype="multipart/form-data">
+      <label for="jamf">Jamf CSV file:</label>
+      <input type="file" id="jamf" name="jamf"><br><br>
+      <label for="crowdstrike_mac">Crowdstrike Mac CSV file:</label>
+      <input type="file" id="crowdstrike_mac" name="crowdstrike_mac"><br><br>
+      <button type="submit">Submit</button>
+    </form>
+<script type="text/javascript" src="{{ url_for('static', filename='js/mac_report.js') }}"></script>
+  
+</body>
+</html>
+

@@ -1,0 +1,2 @@
+CrowdStrike Windows Count: 199
+Intune Count: 361

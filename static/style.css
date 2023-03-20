@@ -1,0 +1,204 @@
+body {
+  background-color: #1C1C1C; /* charcoal black background */
+  color: #fff; /* text color */
+  font-family: "Menlo", "Consolas", "Courier New", monospace; /* font-family for terminal-like text */
+}
+
+a {
+  color: #52B9FF; /* blue color for links */
+  text-decoration: none;
+}
+
+a:hover {
+  color: #B2E6FF; /* lighter blue color for hover state */
+  text-decoration: underline;
+}
+
+/* Header */
+nav.nav-wrapper {
+  background-color: #2D2D2D; /* dark gray color for header */
+}
+
+nav.nav-wrapper a.brand-logo {
+  font-size: 2em;
+  color: #B2B2B2; /* light gray color for header text */
+  font-weight: bold;
+}
+
+nav.nav-wrapper ul.right li a {
+  color: #B2B2B2; /* light gray color for header links */
+  font-weight: bold;
+}
+
+nav.nav-wrapper ul.right li a:hover {
+  color: #EFEFEF; /* lighter gray color for hover state */
+}
+
+/* Main Content */
+main {
+  margin-top: 20px;
+}
+
+h1, h2, h3 {
+  font-weight: bold;
+  color: #B2B2B2; /* light gray color for headings */
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+  background-color: #2D2D2D; /* dark gray color for table background */
+}
+
+table th, table td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #333; /* dark gray border for table cells */
+  color: #B2B2B2; /* light gray color for table text */
+}
+
+table th {
+  background-color: #1E3C72;
+  color: #fff;
+}
+
+table td a {
+  color: #52B9FF; /* blue color for table links */
+}
+
+table td a:hover {
+  color: #B2E6FF; /* lighter blue color for hover state */
+}
+
+.waves-effect {
+  background-color: #2D2D2D; /* dark gray color for button */
+}
+
+.waves-effect:hover {
+  background-color: #3D3D3D; /* slightly lighter gray color for hover state */
+}
+
+/* Footer */
+footer {
+  background-color: #2D2D2D; /* dark gray color for footer */
+  color: #B2B2B2; /* light gray color for footer text */
+  text-align: center;
+  padding: 10px;
+}
+
+footer p {
+  margin: 0;
+}
+
+iframe {
+    border: none;
+    color: #f0f0f0; /* set the font color */
+    font-family: 'Menlo', monospace; /* set the font family */
+    font-size: 14px; /* set the font size */
+    padding: 20px; /* add padding */
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-gap: 20px;
+  padding: 20px;
+}
+
+.chart {
+  position: relative;
+}
+
+.chart iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.chart h3 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  font-weight: normal;
+  width: 100%;
+  text-align: center;
+}
+
+select {
+  background-color: #2D2D2D;
+  color: #fff;
+  border: none;
+  padding: 5px;
+  font-size: 16px;
+  width: 150px;
+  margin: 0 10px;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 9999;
+}
+
+select option {
+  background-color: #2D2D2D;
+  color: #fff;
+  border: none;
+  padding: 5px;
+  font-size: 16px;
+  margin: 0 10px;
+}
+
+/* Move the search bar to the center */
+div.dataTables_wrapper div.dataTables_filter {
+    text-align: center;
+}
+
+/* Move the pagination to the right */
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    justify-content: flex-end;
+}
+
+/* Center the filters */
+.filter {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Add padding to the table */
+#comparison_table_wrapper {
+    padding: 20px;
+}
+
+.dataTables_filter {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.dataTables_filter input {
+  background-color: #2D2D2D;
+  color: #fff;
+  border: none;
+  padding: 5px;
+  font-size: 16px;
+  width: 100%;
+  min-width: 200px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.dataTables_length label {
+    font-size: 0;
+}
+
+.dataTables_length label::after {
+    font-size: 12px;
+}
