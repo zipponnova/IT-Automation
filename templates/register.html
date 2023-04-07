@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+    <title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <!-- Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</head>
+<body class="blue-grey lighten-5">
+  <header>
+    <nav class="nav-wrapper blue-grey darken-4">
+      <div class="container">
+        <a href="{{ url_for('index') }}" class="brand-logo">Bakshi</a>
+        <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="https://6sense.atlassian.net/wiki/spaces/SEC/pages/2792129218/IT+Security+Automation+Tool+Bakshi+Design+Documentation">About</a></li>
+          <li><a href="https://6si.slack.com/archives/C041YUDNATA">Contact</a></li>
+          {% if current_user.is_authenticated %}
+          <li><span class="welcome-text">Welcome, {{ current_user.id }}</span></li>
+          <li>
+            <!-- Add the dropdown trigger -->
+            <a class="dropdown-trigger" href="#" data-target="account-dropdown">
+              <img src="https://img.icons8.com/ios-glyphs/30/000000/settings.png" alt="icon" class="icon-image">
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+        <!-- Add the dropdown menu -->
+        {% if current_user.is_authenticated %}
+        <ul id="account-dropdown" class="dropdown-content terminal-dropdown">
+          <li><a href="{{ url_for('change_password') }}">Change Password</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          <li><a href="{{ url_for('view_users') }}">All Users</a></li>
+          <li class="divider"></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+        {% endif %}
+      </div>
+    </nav>
+  </header>
+    <div class="container">
+        <h1 class="text-center">Register</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="row">
+                <div class="col s12 m6 offset-m3">
+                    {% for category, message in messages %}
+                        <div class="card-panel {% if category == 'success' %}green{% elif category == 'error' %}red{% endif %} lighten-1">
+                            <span class="white-text">{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <form class="col s12 m6 offset-m3" method="POST" action="{{ url_for('register') }}">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="username" name="username" type="text" class="validate" required>
+                        <label for="username">Username</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="password" name="password" type="password" class="validate" required>
+                        <label for="password">Password</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                      <select class="form-control" name="role" required>
+                        <option value="">Select Role</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="superadmin">Superadmin</option>  <!-- Add this line -->
+                    </select>
+                    
+                        <label>Role</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Register
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            var instances = M.FormSelect.init(elems);
+        });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.dropdown-trigger');
+        var instances = M.Dropdown.init(elems, {constrainWidth: false});
+      });
+    </script>
+</body>
+</html>

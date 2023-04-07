@@ -1,0 +1,75 @@
+{
+  "line_chart_data": {
+    "labels": [
+      "1-4",
+      "5-10",
+      "11-15",
+      "16-20",
+      "21+"
+    ],
+    "mdm": [
+      {
+        "label": "Mac - MDM",
+        "data": [
+          0,
+          0,
+          0,
+          0,
+          1301
+        ]
+      },
+      {
+        "label": "Linux - MDM",
+        "data": [
+          0,
+          0,
+          0,
+          0,
+          55
+        ]
+      },
+      {
+        "label": "Windows - MDM",
+        "data": [
+          0,
+          207,
+          8,
+          7,
+          138
+        ]
+      }
+    ],
+    "crowdstrike": [
+      {
+        "label": "Mac - Crowdstrike",
+        "data": [
+          40,
+          7,
+          8,
+          7,
+          30
+        ]
+      },
+      {
+        "label": "Linux - Crowdstrike",
+        "data": [
+          1,
+          1,
+          0,
+          1,
+          1
+        ]
+      },
+      {
+        "label": "Windows - Crowdstrike",
+        "data": [
+          11,
+          5,
+          0,
+          6,
+          7
+        ]
+      }
+    ]
+  }
+}

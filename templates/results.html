@@ -1,87 +1,522 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <title>Bakshi</title>
-  <meta charset="UTF-8">
-  <meta name="description" content="Compare CSV files from different sources to identify discrepancies.">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Materialize CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <!-- Custom CSS -->
-  <link rel="stylesheet" type="text/css" href="static/style.css">
-  <!-- Angular.js -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-  <!-- Bakshi Angular App -->
-  <script src=static/app.js></script>
-  <!-- Materialize JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="description" content="Compare CSV files from different sources to identify discrepancies.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"/>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!-- Angular.js -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    
+    <!-- Bakshi Angular App -->
+    <script src="static/app.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+
+    <!-- html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.3/html2canvas.min.js"></script>
 
   </head>
-  <body>
-    <div class="container">
-      <h1>Complete Report</h1>
-    <table>
-        <thead>
-          <tr>
-              <td><iframe srcdoc="{{ pie_chart }}" width="500" height="430"></iframe></td>
-              <td><iframe srcdoc="{{ present_pie_chart }}" width="500" height="430"></iframe></td>
-          </tr>
-          <tr>
-              <td><iframe srcdoc="{{ missing_pie_chart }}" width="500" height="430"></iframe></td>
-              <!-- Add the host status pie chart -->
-              <td><iframe srcdoc="{{ host_status_pie_chart }}" width="500" height="430"></iframe></td>
-          </tr>
-          <tr> <!-- Add this row for the bar chart -->
-              <td colspan="2"><iframe srcdoc="{{ bar_chart }}" width="1000" height="500"></iframe></td>
-          </tr>
-        </thead>
-      </table>
-      <div class="row">
-	  <form class="col s12">
-	    <div class="row">
-	      <div class="input-field col s4">
-	        <input id="serialNumber" type="text" class="validate" ng-model="filters.serialNumber">
-	        <label for="serialNumber">Serial Number</label>
-	      </div>
-	      <div class="input-field col s4">
-	        <input id="platform" type="text" class="validate" ng-model="filters.platform">
-	        <label for="platform">Platform</label>
-	      </div>
-	      <div class="input-field col s4">
-	        <input id="nameEmail" type="text" class="validate" ng-model="filters.nameEmail">
-	        <label for="nameEmail">Name/Email</label>
-	      </div>
-	      <div class="input-field col s4">
-	        <select id="presence" ng-model="filters.presence">
-	          <option value="" disabled selected>Presence</option>
-	          <option value="Missing">Missing</option>
-	          <option value="Present">Present</option>
-	        </select>
-	        <label for="presence">Presence</label>
-	      </div>
-	    </div>
-	    <button class="btn waves-effect waves-light" type="submit" name="action" ng-click="compareCSV()">Apply Filter</button>
-	  </form>
-	</div>
-      <table>
-        <thead>
-          <tr>
-            {% for header in headers %}
+<body>
+  <header>
+    <nav class="nav-wrapper blue-grey darken-4">
+      <div class="container">
+        <a href="{{ url_for('index') }}" class="brand-logo">Bakshi</a>
+        <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="https://6sense.atlassian.net/wiki/spaces/SEC/pages/2792129218/IT+Security+Automation+Tool+Bakshi+Design+Documentation">About</a></li>
+          <li><a href="https://6si.slack.com/archives/C041YUDNATA">Contact</a></li>
+          {% if current_user.is_authenticated %}
+          <li><span class="welcome-text">Welcome, {{ current_user.id }}</span></li>
+          <li>
+            <!-- Add the dropdown trigger -->
+            <a class="dropdown-trigger" href="#" data-target="account-dropdown">
+              <img src="https://img.icons8.com/ios-glyphs/30/000000/settings.png" alt="icon" class="icon-image">
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+        <!-- Add the dropdown menu -->
+        {% if current_user.is_authenticated %}
+        <ul id="account-dropdown" class="dropdown-content terminal-dropdown">
+          <li><a href="{{ url_for('change_password') }}">Change Password</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          <li><a href="{{ url_for('view_users') }}">All Users</a></li>
+          <li class="divider"></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+        {% endif %}
+      </div>
+    </nav>
+  </header>
+
+<div class="container">
+  <h1>Comparison Report</h1>
+  
+ 
+
+    <div class="chart-row">
+      <div class="chart-container">
+        <h5>Avg Days Since Last Seen Crowdstrike</h5>
+        <canvas id="csHistogram"></canvas>
+      </div>
+  
+    <div class="chart-container">
+      <h5>Avg Days Since Last Seen MDM</h5>
+      <canvas id="mdmHistogram"></canvas>
+    </div>
+    </div>
+  
+ 
+      <div class="container">
+        <h5>Device Comparison Matrix</h5>
+        <canvas id="comparisonChart"></canvas>
+      </div>
+      <h5>Device Time Matrix</h5>
+      <canvas id="lastSeenCrowdstrikeTimeChart"></canvas>
+
+
+      <div class="chart-row">
+        <div class="chart-container">
+      <h5>Critical Last Seen: Top 20 Devices</h5>
+      <div id="oldest-devices-table"></div>
+    </div>
+
+
+
+    <div class="chart-container">
+<!-- Add the toggle button for present and missing -->
+<h5> Average Last Seen Matrix</h5>
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Present</th>
+          <th>Missing</th>
+          <th>Total Count in MDM</th>
+          <th>Avg. Days Since Last Seen MDM</th>
+          <th>Avg. Days Since Last Seen Crowdstrike</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Mac</th>
+          <td>{{ mac_counts['Present'] }}</td>
+          <td>{{ mac_counts['Missing'] }}</td>
+          <td>{{ mac_counts['Present'] + mac_counts['Missing'] }}</td>
+          <td>{{ mac_counts['avg_days_since_last_seen_mdm'] }}</td>
+          <td>{{ mac_counts['avg_days_since_last_seen_crowdstrike'] }}</td>
+        </tr>
+        <tr>
+          <th>Linux</th>
+          <td>{{ linux_counts['Present'] }}</td>
+          <td>{{ linux_counts['Missing'] }}</td>
+          <td>{{ linux_counts['Present'] + linux_counts['Missing'] }}</td>
+          <td>{{ linux_counts['avg_days_since_last_seen_mdm'] }}</td>
+          <td>{{ linux_counts['avg_days_since_last_seen_crowdstrike'] }}</td>
+        </tr>
+        <tr>
+          <th>Windows</th>
+          <td>{{ windows_counts['Present'] }}</td>
+          <td>{{ windows_counts['Missing'] }}</td>
+          <td>{{ windows_counts['Present'] + windows_counts['Missing'] }}</td>
+          <td>{{ windows_counts['avg_days_since_last_seen_mdm'] }}</td>
+          <td>{{ windows_counts['avg_days_since_last_seen_crowdstrike'] }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="download-container">
+    <a id="downloadReport" href="#" class="waves-effect waves-light btn blue-grey darken-3">Download Report</a>
+  </div>
+  <div class="container-fluid">
+    <table id="resultsTable" class="table table-bordered" >
+      <thead>
+        <tr>
+          {% for header in headers %}
+            {% if loop.index == 4 %}
+              <th>{{ header }}<br>
+                <div class="button-wrapper">
+                  <button id="toggle_filter">Present</button>
+                </div>
+              </th>
+            {% else %}
               <th>{{ header }}</th>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+          <tr>
+            {% for cell in row %}
+              <td>{{ cell }}</td>
             {% endfor %}
           </tr>
-        </thead>
-        <tbody>
-          {% for row in rows %}
-            <tr>
-              {% for cell in row %}
-                <td>{{ cell }}</td>
-              {% endfor %}
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+  <!-- Add DataTables JS and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 
-    </div>
-  </body>
+
+  <script>
+    $(document).ready(function () {
+      // Custom filter function to filter rows based on the filterMode
+      var filterMode = 0;
+      $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+        var rowContainsNotFound = false;
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].toLowerCase().includes("missing")) {
+            rowContainsNotFound = true;
+            break;
+          }
+        }
+  
+        if (filterMode === 0) {
+          return !rowContainsNotFound;
+        } else if (filterMode === 1) {
+          return true;
+        } else if (filterMode === 2) {
+          return rowContainsNotFound;
+        }
+  
+        return true;
+      });
+  
+      // Initialize the DataTable
+      const dataTable = $("#resultsTable").DataTable({
+        lengthMenu: [
+          [10, 25, 50, -1],
+          [10, 25, 50, "All"],
+        ],
+        searching: true,
+        ordering: true,
+        paging: true,
+        order: [], // Remove initial order
+        columnDefs: [
+          {
+            targets: "_all",
+            className: "dt-center",
+          },
+        ],
+        language: {
+          search: "Search:",
+          lengthMenu: "Show _MENU_ entries",
+          info: "Showing _START_ to _END_ of _TOTAL_ entries",
+          infoFiltered: " (filtered from _MAX_ total entries)",
+          paginate: {
+            first: "First",
+            previous: "Previous",
+            next: "Next",
+            last: "Last",
+          },
+        },
+      });
+  
+      // Update filterMode and apply custom filter when the 'toggle_filter' element is clicked
+      $("#toggle_filter").on("click", function () {
+        filterMode = (filterMode + 1) % 3;
+        switch (filterMode) {
+          case 0:
+            $(this).text("Present");
+            break;
+          case 1:
+            $(this).text("All");
+            break;
+          case 2:
+            $(this).text("Missing");
+            break;
+        }
+        dataTable.draw();
+      });
+    });
+  </script>
+
+  <script>  
+    $(document).ready(function() {
+      // Render the comparison chart
+      const ctx = document.getElementById('comparisonChart').getContext('2d');
+      const chartData = {
+        labels: ['Mac', 'Linux', 'Windows'],
+        datasets: [
+          {
+            label: 'Present',
+            data: [
+              {{ mac_counts['Present'] }},
+              {{ linux_counts['Present'] }},
+              {{ windows_counts['Present'] }}
+            ],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Missing',
+            data: [
+              {{ mac_counts['Missing'] }},
+              {{ linux_counts['Missing'] }},
+              {{ windows_counts['Missing'] }}
+            ],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          }
+        ]
+      };
+    
+      const chartOptions = {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      };
+    
+      new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: chartOptions
+      });
+
+    // Render the MDM histogram
+    const mdmCtx = document.getElementById('mdmHistogram').getContext('2d');
+    const mdmData = {
+      labels: ['Mac', 'Linux', 'Windows'],
+      datasets: [
+        {
+          label: 'Avg Days Since Last Seen MDM',
+          data: [
+            {{ mac_counts['avg_days_since_last_seen_mdm'] }},
+            {{ linux_counts['avg_days_since_last_seen_mdm'] }},
+            {{ windows_counts['avg_days_since_last_seen_mdm'] }}
+          ],
+          backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          borderColor: 'rgba(153, 102, 255, 1)',
+          borderWidth: 1
+        }
+      ]
+    };
+
+    const mdmOptions = {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    };
+
+    new Chart(mdmCtx, {
+      type: 'bar',
+      data: mdmData,
+      options: mdmOptions
+    });
+  
+      // Render the Crowdstrike histogram
+      const csCtx = document.getElementById('csHistogram').getContext('2d');
+      const csData = {
+        labels: ['Mac', 'Linux', 'Windows'],
+        datasets: [
+          {
+            label: 'Avg Days Since Last Seen Crowdstrike',
+            data: [
+              {{ mac_counts['avg_days_since_last_seen_crowdstrike'] }},
+              {{ linux_counts['avg_days_since_last_seen_crowdstrike'] }},
+              {{ windows_counts['avg_days_since_last_seen_crowdstrike'] }}
+            ],
+            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            borderColor: 'rgba(255, 159, 64, 1)',
+            borderWidth: 1
+          }
+        ]
+      };
+  
+      const csOptions = {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    };
+
+    new Chart(csCtx, {
+      type: 'bar',
+      data: csData,
+      options: csOptions
+    });
+  }); 
+  </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.dropdown-trigger');
+    var instances = M.Dropdown.init(elems, {constrainWidth: false});
+  });
+</script>
+<script>
+  function createLastSeenCrowdstrikeTimeChart(data) {
+  const labels = [];
+  const dataset = [];
+
+  data.forEach(row => {
+    labels.push(row[0] + " - " + row[1]); // Concatenate 1st and 2nd columns
+    dataset.push(row[7]); // Get data from 8th column
+  });
+
+  const ctx = document.getElementById('lastSeenCrowdstrikeTimeChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Last Seen in Crowdstrike (Days)',
+        data: dataset,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Days'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Serial Number - Platform'
+          }
+        }
+      }
+    }
+  });
+}
+
+  
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    createLastSeenCrowdstrikeTimeChart(naRowsData);
+  });
+</script>
+<script>
+  const naRowsData = {{ na_rows|tojson }};
+</script>
+<script>
+  function createTopOldestDevicesTable(rows) {
+  // Filter rows that have valid last seen in Crowdstrike
+  const filteredRows = rows.filter(row => row[7] !== 'Not Found' && row[7] !== 'N/A');
+
+  // Sort by last seen in Crowdstrike (8th column)
+  filteredRows.sort((a, b) => b[7] - a[7]);
+
+  // Get the top 20 oldest devices
+  const topRows = filteredRows.slice(0, 20);
+
+  // Create the table
+  const table = document.createElement('table');
+  table.classList.add('table', 'table-bordered', 'table-hover', 'table-sm');
+
+  // Add table headers
+  const thead = document.createElement('thead');
+  const headerRow = document.createElement('tr');
+  ['Serial Number', 'Platform', 'Name/Email', 'Last Seen in Crowdstrike'].forEach(headerText => {
+    const th = document.createElement('th');
+    th.textContent = headerText;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  // Add table rows
+  const tbody = document.createElement('tbody');
+  topRows.forEach(row => {
+    const tr = document.createElement('tr');
+    [0, 1, 2, 7].forEach(index => {
+      const td = document.createElement('td');
+      td.textContent = row[index];
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+
+  // Add the table to the DOM
+  const tableContainer = document.getElementById('oldest-devices-table');
+  tableContainer.appendChild(table);
+}
+
+// Call the function with the data
+document.addEventListener('DOMContentLoaded', function() {
+  createTopOldestDevicesTable(naRowsData);
+});
+
+  </script>
+
+
+<script>
+  function expandAllTables() {
+  const expandButtons = document.querySelectorAll('.collapsible-header');
+  
+  expandButtons.forEach((button) => {
+    if (!button.classList.contains('active')) {
+      button.click();
+    }
+  });
+}
+
+function downloadReport() {
+  expandAllTables();
+  
+  setTimeout(() => {
+    const downloadElement = document.createElement('a');
+    const reportContent = document.querySelector('html').outerHTML;
+    const blob = new Blob([reportContent], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    
+    downloadElement.href = url;
+    downloadElement.download = 'Comparison_Report.html';
+    downloadElement.click();
+    
+    URL.revokeObjectURL(url);
+  }, 1000);
+}
+
+document.getElementById('downloadReport').addEventListener('click', downloadReport);
+
+</script>
+
+</body>
 </html>

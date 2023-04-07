@@ -18,29 +18,44 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <!-- Plotly.js -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  
 </head>
 
 <body>
   <header>
     <nav class="nav-wrapper blue-grey darken-4">
       <div class="container">
-        <a href="#" class="brand-logo">Bakshi</a>
+        <a href="{{ url_for('index') }}" class="brand-logo">Bakshi</a>
         <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="https://6sense.atlassian.net/wiki/spaces/SEC/pages/2792129218/IT+Security+Automation+Tool+Bakshi+Design+Documentation">About</a></li>
+          <li><a href="https://6si.slack.com/archives/C041YUDNATA">Contact</a></li>
+          {% if current_user.is_authenticated %}
+          <li><span class="welcome-text">Welcome, {{ current_user.id }}</span></li>
+          <li>
+            <!-- Add the dropdown trigger -->
+            <a class="dropdown-trigger" href="#" data-target="account-dropdown">
+              <img src="https://img.icons8.com/ios-glyphs/30/000000/settings.png" alt="icon" class="icon-image">
+            </a>
+          </li>
+          {% endif %}
         </ul>
+        <!-- Add the dropdown menu -->
+        {% if current_user.is_authenticated %}
+        <ul id="account-dropdown" class="dropdown-content terminal-dropdown">
+          <li><a href="{{ url_for('change_password') }}">Change Password</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          <li><a href="{{ url_for('view_users') }}">All Users</a></li>
+          <li class="divider"></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+        {% endif %}
       </div>
     </nav>
-
-    <ul class="sidenav" id="mobile-menu">
-      <li><a href="#">Home</a></li>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Contact</a></li>
-    </ul>
   </header>
-
   <main ng-controller="bakshiCtrl">
     <div class="container">
       <div class="row">
@@ -79,13 +94,6 @@
 <tr>
   <td><label for="jumpcloud" style="font-size: 1.2em;">JumpCloud</label></td>
   <td><div class="file-field input-field">
-        <div class="btn blue-grey darken-4">
-          <span>Upload</span>
-          <input type="file" id="jumpcloud" name="jumpcloud">
-        </div>
-        <div class="file-path-wrapper">
-          <input class="file-path validate" type="text">
-        </div>
       </div>
   </td>
   <td><button type="submit" class="waves-effect waves-light btn blue darken-3" formaction="/linux_slack">Bulk Slack</button></td>
@@ -111,5 +119,49 @@
   <button type="submit" class="waves-effect waves-light btn blue darken-3" formaction="/compare">Complete Report</button>
   <button type="submit" class="waves-effect waves-light btn blue darken-3" formaction="/report">Missing Devices Report</button>
   <button type="submit" class="waves-effect waves-light btn blue darken-3" formaction="/compare_time_stamps">Time Compare</button>
-</table></form></div></div></div></main></body></html>
-  
+</table></form></div></div></div><br>
+<div class="container api-container">
+  <h5>API Health Check</h5>
+  <table class="container" align="left">
+      <thead>
+          <tr>
+              <th>API</th>
+              <th>Status</th>
+          </tr>
+      </thead>
+      <tbody id="api-status-table" align="left">
+          <!-- API statuses will be added here -->
+      </tbody>
+  </table>
+</div>
+</main>
+<script>
+  $(document).ready(function() {
+    // Fetch API health check status
+    fetch('/api/health-check')
+      .then(response => response.json())
+      .then(data => {
+        const apiStatusTable = $('#api-status-table');
+
+        // Add API statuses to the table
+        Object.entries(data).forEach(([api, status]) => {
+          const row = $('<tr>').append(
+            $('<td>').text(api),
+            $('<td>').text(status)
+          );
+
+          apiStatusTable.append(row);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching API health check status:', error);
+      });
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.dropdown-trigger');
+    var instances = M.Dropdown.init(elems, {constrainWidth: false});
+  });
+</script>
+</body></html>
