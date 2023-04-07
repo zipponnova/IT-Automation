@@ -3,9 +3,10 @@
 Bakshi is tool that compares 6sense MDM hosts with Crowdstrike to understand IT/Security Posture.
 
 # How does this work?
-- Currently one need to upload CSV files from different sources to identify discrepancies.
-- Crowdstrike API has been added so need to get csv of crowdstrike host.
-- Get CSV from JAMF, JumpCloud and Intune.
+- Upload MDM user data from JAMF, Jumpcloud and Intune to compare the results.
+- The powerful APIs of Crowdstrike and MDM pulls the data to create multiple comparison reports in the app.
+- Add more APIs from other MDMs.
+- Store all the secrets in the bashrc to run the app.
 
 # How to setup environment?
 
@@ -13,6 +14,7 @@ Bakshi is tool that compares 6sense MDM hosts with Crowdstrike to understand IT/
 
 ```
 git clone https://github.com/6si/security/tree/main/it-automation/Bakshi
+source ~/.bashrc
 python3 Bakshi_app.py
 ```
 
