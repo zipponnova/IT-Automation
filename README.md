@@ -1,6 +1,6 @@
 # What is Bakshi?
 
-Bakshi is tool that compares 6sense MDM hosts with Crowdstrike to understand IT/Security Posture.
+Bakshi is tool that compares MDM hosts with Crowdstrike to understand IT/Security Posture.
 
 # How does this work?
 - Upload MDM user data from JAMF, Jumpcloud and Intune to compare the results.
